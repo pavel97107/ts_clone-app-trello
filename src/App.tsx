@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
-import {TaskType, Todolist} from './Todolist';
+import {TaskType, TodoList} from './Todolist';
 import {v1} from 'uuid';
+import {AddItemForm} from "./AddItemForm";
+
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -10,39 +12,16 @@ type TodoListType = {
     title: string,
     filter: FilterValuesType
 }
-let todoListID1 = v1()
-let todoListID2 = v1()
-
 type TaskTypeObject = {
-    [key: string] : Array<TaskType>
+    [key: string]: Array<TaskType>
 }
 
 function App() {
 
 
+    let [todoLists, setTodoLists] = useState<TodoListType[]>([])
 
-
-    let [todoLists, setTodoLists] = useState<TodoListType[]>([
-        {id: todoListID1, title: 'Common Baby', filter: 'all'},
-        {id: todoListID2, title: 'How to lear JS', filter: 'all'},
-    ])
-
-    let [tasks, setTasks] = useState<TaskTypeObject>({
-            [todoListID1]: [
-                {id: v1(), title: "HTML&CSS", isDone: true},
-                {id: v1(), title: "JS", isDone: true},
-                {id: v1(), title: "ReactJS", isDone: false},
-                {id: v1(), title: "Rest API", isDone: false},
-                {id: v1(), title: "GraphQL", isDone: false},
-            ],
-            [todoListID2]: [
-                {id: v1(), title: "HTML&CSS", isDone: true},
-                {id: v1(), title: "JS", isDone: true},
-                {id: v1(), title: "ReactJS", isDone: false},
-                {id: v1(), title: "Rest API", isDone: false},
-                {id: v1(), title: "GraphQL", isDone: false},
-            ]
-        }
+    let [tasks, setTasks] = useState<TaskTypeObject>({}
         )
     ;
 
@@ -64,11 +43,10 @@ function App() {
     function addTask(title: string, todoListID: string) {
         let task = {id: v1(), title: title, isDone: false};
         let todoListTasks = tasks[todoListID];
-        let newTasks = {...tasks, [todoListID] : [...tasks[todoListID], task]}
+        let newTasks = {...tasks, [todoListID]: [...tasks[todoListID], task]}
         // tasks[todoListID] = [task, ...todoListTasks]
         setTasks(newTasks);
     }
-
 
     function changeStatus(id: string, isDone: boolean, todoListID: string) {
         let todoListTasks = tasks[todoListID];
@@ -80,7 +58,6 @@ function App() {
 
     }
 
-
     function changeFilter(id: string, value: FilterValuesType) {
         let todoList = todoLists.find((el) => el.id === id)
         if (todoList) {
@@ -90,8 +67,37 @@ function App() {
     }
 
 
+    function createTodoList(title: string) {
+        let newId = v1()
+        let newTodoLit: TodoListType = {id: newId, title: title, filter: 'all'}
+        setTodoLists([...todoLists, newTodoLit])
+        setTasks({...tasks, [newId]: []})
+    }
+
+    function changeTitleItemTasks(title: string, itemID: string, todoID: string) {
+            let itemTask = tasks[todoID].find(el => el.id === itemID)
+            if(itemTask) {
+                itemTask.title = title
+                setTasks({...tasks})
+            }
+    }
+
+    function changeTitleTodo(title: string, todoID: string) {
+        let itemTask = todoLists.find(el => el.id === todoID)
+        if(itemTask) {
+            itemTask.title = title
+            setTasks({...tasks})
+        }
+    }
+
+
+
     return (
         <div className="App">
+            <div>
+                Название TodoList)
+                <AddItemForm onClick={createTodoList}/>
+            </div>
             {todoLists.map(todoObj => {
                 let allTasks = tasks[todoObj.id];
                 let tasksForTodoList = allTasks;
@@ -104,7 +110,9 @@ function App() {
                 }
 
                 return (
-                    <Todolist key={todoObj.id}
+                    <TodoList changeTitleTodo={changeTitleTodo}
+                              changeTitleItemTasks={changeTitleItemTasks}
+                              key={todoObj.id}
                               deleteTodo={deleteTodo}
                               id={todoObj.id}
                               title={todoObj.title}
