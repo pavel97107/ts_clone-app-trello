@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import {FilterValuesType} from './App';
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
@@ -38,10 +38,18 @@ export function TodoList(props: PropsType) {
     }
 
 
+    const onChangeTitleTodo = (value: string) => {
+        props.changeTitleTodo(value, props.id)
+    }
+
+
     return <div>
-        <EditableTodoTitle todoID={props.id} changeTitleTodo={props.changeTitleTodo} title={props.title}>{}
+        <h3>
+            <EditableSpan title={props.title} saveTitle={onChangeTitleTodo} />
             <button onClick={props.deleteTodo(props.id)}>X</button>
-        </EditableTodoTitle>
+        </h3>
+
+
         <AddItemForm onClick={addTasksItem}/>
         <ul>
             {
@@ -51,11 +59,14 @@ export function TodoList(props: PropsType) {
                         let newIsDoneValue = e.currentTarget.checked
                         props.changeStatus(t.id, newIsDoneValue, props.id)
                     }
+
+                    const onChangeTitleTasks = (value: string) => {
+                        props.changeTitleItemTasks(value, t.id, props.id)
+                    }
+
                     return <li className={props.filter !== 'completed' && t.isDone ? 'is-done' : ''} key={t.id}>
                         <input type="checkbox" onChange={onChangeIsDoneTask} checked={t.isDone}/>
-                        <EditableSpan changeTitleItemTasks={props.changeTitleItemTasks}
-                                      itemID={t.id} todoID={props.id}
-                                      title={t.title}/>
+                        <EditableSpan title={t.title} saveTitle={onChangeTitleTasks} />
                         <button onClick={onClickHandler}>x</button>
 
                     </li>

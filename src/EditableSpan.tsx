@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 
 type TypeEditMode = {
     title: string
-    itemID: string
-    todoID: string
-    changeTitleItemTasks: (title: string, itemID: string, todoID: string) => void
+    saveTitle: (value: string) => void
 }
 
-export const EditableSpan = ({title, itemID, todoID, changeTitleItemTasks}: TypeEditMode) => {
+export const EditableSpan = ({title, saveTitle}: TypeEditMode) => {
 
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [newTitle, setNewTitle] = useState<string>(title)
@@ -18,7 +16,7 @@ export const EditableSpan = ({title, itemID, todoID, changeTitleItemTasks}: Type
 
     const offEditMode = () => {
         setIsEdit(false)
-        changeTitleItemTasks(newTitle, itemID, todoID)
+        saveTitle(newTitle)
     }
 
     const onChangeNewTitle = (event: any) => {
