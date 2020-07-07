@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import TextField from "@material-ui/core/TextField";
+
 
 type TypeEditMode = {
     title: string
@@ -26,7 +28,7 @@ export const EditableSpan = ({title, saveTitle}: TypeEditMode) => {
 
     return (
         <>
-            {isEdit ? <input autoFocus onBlur={offEditMode} onChange={onChangeNewTitle} type="text" value={newTitle}/> :
+            {isEdit ? <TextField size='small' autoFocus onBlur={offEditMode} onChange={onChangeNewTitle} type="text" value={newTitle}/> :
                 <span onDoubleClick={onEditMode}>{title}</span>}
         </>
 

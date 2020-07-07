@@ -1,4 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react'
+import { AddBox, Menu} from '@material-ui/icons';
+import TextField from "@material-ui/core/TextField";
+import IconButton from '@material-ui/core/IconButton';
 
 type TypeForm = {
     onClick: (title : string) => void
@@ -7,9 +10,9 @@ type TypeForm = {
 
 export const AddItemForm = ( props : TypeForm) => {
 
-    let [title, setTitle] = useState("")
+    let [title, setTitle] = useState<string>("")
     let [error, setError] = useState<string | null>(null)
-    const addTask = () => {
+    const addTaskOrTodo = () => {
         if (title.trim()) {
             props.onClick(title)
         } else {
@@ -25,18 +28,21 @@ export const AddItemForm = ( props : TypeForm) => {
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null)
         if (e.charCode === 13) {
-            addTask();
+            addTaskOrTodo();
         }
     }
 
     return (
-        <div>
-            <input className={error ? 'error' : ''} value={title}
-                   onChange={onChangeHandler}
-                   onKeyPress={onKeyPressHandler}
-            />
-            <button onClick={addTask}>+</button>
-            {error && <div className='error-message'>{error}</div>}
+        <div onBlur={() => setError(null)}>
+            <TextField  error={!!error}  value={title}
+                        label='Title'
+                        helperText={error}
+                        onChange={onChangeHandler}
+                        onKeyPress={onKeyPressHandler} id="outlined-basic"  variant="outlined" size='small'/>
+            <IconButton onClick={addTaskOrTodo} color="primary">
+                <AddBox />
+            </IconButton>
+            {/*<Button variant="contained"  >ADD</Button>*/}
         </div>
     )
 }
