@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
-type TodoListType = {
+export type TodoListType = {
     id: string,
     title: string,
     filter: FilterValuesType
@@ -25,9 +25,7 @@ function App() {
 
     let [todoLists, setTodoLists] = useState<TodoListType[]>([])
 
-    let [tasks, setTasks] = useState<TaskTypeObject>({}
-        )
-    ;
+    let [tasks, setTasks] = useState<TaskTypeObject>({})
 
 
     function deleteTodo(id: string) {
@@ -56,8 +54,13 @@ function App() {
         let todoListTasks = tasks[todoListID];
         let task = todoListTasks.find((task) => task.id === id)
         if (task) {
-            task.isDone = isDone
-            setTasks({...tasks})
+            const copy = {...task, isDone}
+            const newCopyTodoLists = todoListTasks.map(el => {
+                if(el.id === id) return copy
+                return el
+            })
+
+            setTasks({...tasks, [todoListID] : newCopyTodoLists})
         }
 
     }
@@ -65,8 +68,12 @@ function App() {
     function changeFilter(id: string, value: FilterValuesType) {
         let todoList = todoLists.find((el) => el.id === id)
         if (todoList) {
-            todoList.filter = value
-            setTodoLists([...todoLists])
+            const copy =  {...todoList, filter : value}
+            const newCopyTodoLists = todoLists.map(el => {
+                if(el.id === id) return copy
+                return el
+            })
+            setTodoLists(newCopyTodoLists)
         }
     }
 
@@ -81,16 +88,24 @@ function App() {
     function changeTitleItemTasks(title: string, itemID: string, todoID: string) {
         let itemTask = tasks[todoID].find(el => el.id === itemID)
         if (itemTask) {
-            itemTask.title = title
-            setTasks({...tasks})
+            const copy =  {...itemTask, title}
+            const newCopyTodoLists = tasks[todoID].map(el => {
+                if(el.id === itemID) return copy
+                return el
+            })
+            setTasks({...tasks, [todoID] : newCopyTodoLists})
         }
     }
 
     function changeTitleTodo(title: string, todoID: string) {
         let itemTask = todoLists.find(el => el.id === todoID)
         if (itemTask) {
-            itemTask.title = title
-            setTodoLists([...todoLists])
+            const copy = {...itemTask, title}
+            const newCopyTodoLists = todoLists.map(el => {
+                if (el.id === todoID) return copy
+                return el
+            })
+            setTodoLists(newCopyTodoLists)
         }
     }
 
