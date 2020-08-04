@@ -16,7 +16,7 @@ export type TodoListType = {
     title: string,
     filter: FilterValuesType
 }
-type TaskTypeObject = {
+export type TaskTypeObject = {
     [key: string]: Array<TaskType>
 }
 
@@ -131,7 +131,7 @@ function App() {
                     {todoLists.map(todoObj => {
                         let allTasks = tasks[todoObj.id];
                         let tasksForTodoList = allTasks;
-
+``
                         if (todoObj.filter === "active") {
                             tasksForTodoList = allTasks.filter(t => t.isDone === false);
                         }

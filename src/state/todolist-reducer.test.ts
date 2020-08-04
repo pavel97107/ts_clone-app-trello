@@ -1,11 +1,10 @@
-import {CreateTodoLisAC, DeleteTodoAC, todoListsReducer} from './todolists-reducer';
+import {changeTodoListFilterAC, DeleteTodoAC, todoListsReducer} from './todolists-reducer';
+import {addTodoListAC} from './tasks-reducer'
 import {v1} from 'uuid';
 import {FilterValuesType, TodoListType} from "../App";
 
 
 describe( 'todo-reducer', () => {
-
-
     test('correct todolist should be removed', () => {
         let todolistId1 = v1();
         let todolistId2 = v1();
@@ -32,7 +31,7 @@ describe( 'todo-reducer', () => {
             {id: todolistId2, title: "What to buy", filter: "all"}
         ]
 
-        const endState = todoListsReducer(startState, CreateTodoLisAC(newTodolistTitle))
+        const endState = todoListsReducer(startState, addTodoListAC(newTodolistTitle))
 
         expect(endState.length).toBe(3);
         expect(endState[2].title).toBe(newTodolistTitle);
@@ -72,12 +71,8 @@ describe( 'todo-reducer', () => {
             {id: todolistId2, title: "What to buy", filter: "all"}
         ]
 
-        const action = {
-            type: 'CHANGE-TODOLIST-FILTER' as const,
-            id: todolistId2,
-            filter: newFilter
-        };
 
+        const action = changeTodoListFilterAC(newFilter, todolistId2)
         const endState = todoListsReducer(startState, action);
 
         expect(endState[0].filter).toBe("all");
